@@ -1,27 +1,27 @@
 var players = [
   {
-    id: 1, name: 'Vlad', score: '100',
+    id: 1, name: 'Vlad', score: 100,
     strikes: {
       '15': 3, '16': 1, '17': 0, '18': 0, '19': 3, '20': 2, '25': 0
     }
   },
 
   {
-    id: 2, name: 'Luci', score: '54',
+    id: 2, name: 'Luci', score: 54,
     strikes: {
       '15': 3, '16': 1, '17': 0, '18': 0, '19': 3, '20': 2, '25': 0
     }
   },
 
   {
-    id: 3, name: 'Horia', score: '0',
+    id: 3, name: 'Horia', score: 0,
     strikes: {
       '15': 3, '16': 1, '17': 0, '18': 0, '19': 3, '20': 2, '25': 0
     }
   },
 
   {
-    id: 4, name: 'Andrei', score: '120',
+    id: 4, name: 'Andrei', score: 120,
     strikes: {
       '15': 3, '16': 1, '17': 0, '18': 0, '19': 3, '20': 2, '25': 0
     }

@@ -16,7 +16,24 @@ function gui(containerId, game) {
       // set player strikes
       $playerModal.find('.player-strikes tbody').empty();
       $.each(player.strikes, function(strike, times) {
-        $playerModal.find('.player-strikes tbody').append(self.playerStrike(strike, times));
+        $playerModal.find('.player-strikes tbody').append(self.playerStrike(strike, times, player.id));
+      });
+      // wire btn-add-strike
+      $('.btn-add-strike').on('click', function(event) {
+        var strike = $(this).data('strike');
+        // perform a strike and see if we need to update player scores;
+        var updateScores = self.game.addStrike(player, strike);
+
+        if (updateScores) {
+          $.each(self.game.players, function(index, p) {
+            if (p.id != player.id) {
+              $('.player-button[data-player-id="' + p.id + '"] .score').text(p.score);
+            }
+          });
+        } else {
+          // update strike times-count for the current player
+          $playerModal.find('.player-strikes .times-count[data-strike="' + strike + '"]').text(player.strikes[strike]);  
+        }
       });
       // show the modal
       $playerModal.modal('show');
@@ -35,9 +52,10 @@ function gui(containerId, game) {
     return html;
   }
 
-  self.playerStrike = function(strike, times) {
-    var html = '<tr><td class="strike">' + strike + '</td><td class="times">' + times;
-    html += '<button class="btn btn-xs btn-primary btn-add-strike" data-strike="' + strike + '">';
+  self.playerStrike = function(strike, times, playerId) {
+    var html = '<tr><td class="strike">' + strike + '</td><td class="times">';
+    html += '<span class="times-count" data-strike="' + strike + '">' + times + '</span>';
+    html += '<button class="btn btn-xs btn-primary btn-add-strike" data-player-id="' + playerId + '" data-strike="' + strike + '">';
     html += '<i class="fa fa-fw fa-plus"></i></button>';
     html += '</td>';
     return html;
@@ -74,5 +92,26 @@ function Cricket(containerId) {
     return $.grep(players, function(player, index) {
       return player.id == playerId;
     })[0];
+  }
+
+  self.addStrike = function(player, strike) {
+    var updateScores = false;
+    
+    if (player.strikes[strike] < 3) {
+      // add a new strike for that number if it's below 3 strikes
+      player.strikes[strike]++;
+    } else {
+      // update all other player scores
+      updateScores = true;
+
+      $.each(self.players, function(index, p) {
+        console.log(p);
+        if (p.id != player.id && p.strikes[strike] < 3) {
+          p.score += parseInt(strike);
+        }
+      });
+    }
+
+    return updateScores;
   }
 }
