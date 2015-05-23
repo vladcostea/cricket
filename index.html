@@ -9,8 +9,11 @@
 
     <!-- Bootstrap and jQuery-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/fonts/font-awesome/font-awesome-4.3.0/css/font-awesome.min.css">
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <link href="css/cricket.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,6 +23,39 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    
+    <div class="container-fluid">
+      <div id="players"></div>
+    </div>
+
+    <div class="modal fade" id="player-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped player-strikes">
+              <tbody>
+                
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="js/cricket.js"></script>
+    <script src="js/seed.js"></script>
+    <script>
+    $(function() {
+      var game = new Cricket('players');
+      game.init(players);
+    })
+    </script>
   </body>
 </html>
