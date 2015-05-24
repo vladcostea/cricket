@@ -48,8 +48,25 @@ function gui(containerId, game) {
     var html = "<a href='#player-modal' class='player-button clearfix' data-player-id='" + player.id + "'>";
     html += '<span class="name">' + player.name + '</span> - ';
     html += '<span class="score">' + player.score + '</span>';
+    html += self.playerButtonStrikes(player);
     html += '</a>';
     return html;
+  }
+
+  self.playerButtonStrikes = function(player) {
+    var html = '<table class="table strikes"><tbody>';
+    var open = [], closed = [];
+    $.each(player.strikes, function(strike, times) {
+      if (player.strikes[strike] == 3) {
+        closed.push(strike);
+      } else {
+        open.push(strike);
+      }
+    });
+
+    html += '<tr><td class="title">Closed</td><td class="numbers">' + closed + '</td></tr>';
+    html += '<tr><td class="title">Open</td><td class="numbers">' + open + '</td></tr>';
+    return html + '</tbody></table>';
   }
 
   self.playerStrike = function(strike, times, playerId) {

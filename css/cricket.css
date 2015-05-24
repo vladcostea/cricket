@@ -49,7 +49,9 @@ body {
 }
 
 .player-button {
+  position: relative;
   padding: 20px;
+  padding-bottom: 10px;
   display: block;
   margin-bottom: 15px;
   background-color: whitesmoke;
@@ -64,3 +66,43 @@ body {
 .player-button .score {
   font-weight: bold;
 }
+
+.player-button .strikes {
+  margin-top: 15px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+.player-button .strikes tr:first-child td {
+  border-top: none;
+}
+
+.player-button .strikes tr td.title {
+  color: #777;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-left: 0px
+}
+
+.player-button .strikes tr td.numbers {
+  text-align: right;
+  font-size: 12px;
+  color: #777;
+  padding-right: 0px;
+}
+/*.player-button .closed, .open {
+  position: absolute;
+}
+
+.player-button .closed {
+  top: 10px;
+  right: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.player-button .open {
+  bottom: 10px;
+  right: 20px;
+}
+*/
