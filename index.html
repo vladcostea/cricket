@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Bootstrap 101 Template</title>
+    <title>Cricket</title>
 
     <!-- Bootstrap and jQuery-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -25,57 +25,38 @@
   <body>
     
     <div class="container-fluid">
-      <div id="players">
-        
-<!--         <a href="#" class="player-button clearfix">
-          <span class="name">Vlad</span>
-          -
-          <span class="score">100</span>
 
-          <table class="table strikes">
-            <tbody>
-              <tr>
-                <td class="title">Closed</td>
-                <td class="numbers">15, 16, 17</td>
-              </tr>
-              <tr>
-                <td class="title">Open</td>
-                <td class="numbers">15, 16, 17, 18, 19, 20, 25</td>
-              </tr>
-            </tbody>
-          </table>
-        </a>
- -->
-      </div>
+      <p class="reset-container">
+        <button class="btn btn-primary reset-button" type="button">New Game</button>
+      </p>
+
+      <table class="table cricket-board">
+        <thead>
+          <tr>
+            <th>Player</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>25</th><th>Score</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="input-group new-player-input-group">
+        <input type="text" class="form-control new-player-input" placeholder="Add a new player to the game">
+        <span class="input-group-btn">
+          <button class="btn btn-primary new-player-button" type="button">Add Player</button>
+        </span>
+      </div><!-- /input-group -->
+
+      <ul class="events">
+        <li class="title">Events</li>
+      </ul>     
     </div>
-
-    <div class="modal fade" id="player-modal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"></h4>
-          </div>
-          <div class="modal-body">
-            <table class="table table-striped player-strikes">
-              <tbody>
-                
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 
     <script src="js/cricket.js"></script>
     <script src="js/seed.js"></script>
     <script>
     $(function() {
-      var game = new Cricket('players');
-      game.init(players);
+      var game = new Cricket('cricket-board');
+      game.init();
     })
     </script>
   </body>

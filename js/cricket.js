@@ -1,95 +1,146 @@
-function gui(containerId, game) {
+function gui(boardClass, game) {
   var self = this;
-  var $container = $('#' + containerId);
-  var $playerModal = $('#player-modal');
 
   self.game = game;
+  self.$board = $('.' + boardClass);
+  self.$events = $('.events');
 
   self.wireEvents = function() {
-    $('.player-button').on('click', function(event) {
-      event.preventDefault();
-      // update modal ui
-      // first get the player object using it's id
-      var player = self.game.findPlayer( $(this).data('player-id') );
-      // set modal title to player name
-      $playerModal.find('.modal-title').text(player.name);
-      // set player strikes
-      $playerModal.find('.player-strikes tbody').empty();
-      $.each(player.strikes, function(strike, times) {
-        $playerModal.find('.player-strikes tbody').append(self.playerStrike(strike, times, player.id));
-      });
-      // wire btn-add-strike
-      $('.btn-add-strike').on('click', function(event) {
-        var strike = $(this).data('strike');
-        // perform a strike and see if we need to update player scores;
-        var updateScores = self.game.addStrike(player, strike);
 
-        if (updateScores) {
-          $.each(self.game.players, function(index, p) {
-            if (p.id != player.id) {
-              $('.player-button[data-player-id="' + p.id + '"] .score').text(p.score);
-            }
-          });
-        } else {
-          // update strike times-count for the current player
-          $playerModal.find('.player-strikes .times-count[data-strike="' + strike + '"]').text(player.strikes[strike]);  
-        }
-      });
-      // show the modal
-      $playerModal.modal('show');
+    $.each(self.game.players, function(i, player) {
+      self.handlePlayerEvents(player);
     });
+
+    self.handleNewPlayer();
+
+    self.handleReset();
   }
 
-  self.clearContainer = function() {
-    $container.empty();
-  }
+  self.handleNewPlayer = function() {
+    $('.new-player-button').on('click', function(event) {
+      var $input = $('.new-player-input');
+      var newPlayerName = $input.val();
+      if (newPlayerName) {
+        // create the new player
+        player = self.game.createPlayer(newPlayerName);
+        // update the ui
+        self.addPlayerRow(player);
+        // wire the players' events
+        self.handlePlayerEvents(player);
+        // clear the input field
+        $input.val('');
 
-  self.playerButton = function(player) {
-    var html = "<a href='#player-modal' class='player-button clearfix' data-player-id='" + player.id + "'>";
-    html += '<span class="name">' + player.name + '</span> - ';
-    html += '<span class="score">' + player.score + '</span>';
-    html += self.playerButtonStrikes(player);
-    html += '</a>';
-    return html;
-  }
-
-  self.playerButtonStrikes = function(player) {
-    var html = '<table class="table strikes"><tbody>';
-    var open = [], closed = [];
-    $.each(player.strikes, function(strike, times) {
-      if (player.strikes[strike] == 3) {
-        closed.push(strike);
-      } else {
-        open.push(strike);
+        self.newPlayerEvent(player);
       }
     });
-
-    html += '<tr><td class="title">Closed</td><td class="numbers">' + closed + '</td></tr>';
-    html += '<tr><td class="title">Open</td><td class="numbers">' + open + '</td></tr>';
-    return html + '</tbody></table>';
   }
 
-  self.playerStrike = function(strike, times, playerId) {
-    var html = '<tr><td class="strike">' + strike + '</td><td class="times">';
-    html += '<span class="times-count" data-strike="' + strike + '">' + times + '</span>';
-    html += '<button class="btn btn-xs btn-primary btn-add-strike" data-player-id="' + playerId + '" data-strike="' + strike + '">';
-    html += '<i class="fa fa-fw fa-plus"></i></button>';
-    html += '</td>';
+  self.newPlayerEvent = function(player) {
+    self.$events.append('<li class="event join">' + player.name + ' joined the game</li>');
+  }
+
+  self.playerStrikeEvent = function(player, strike) {
+    self.$events.append('<li class="event strike">' + player.name + ' hit ' + strike + '</li>'); 
+  }
+
+  self.playerStrikeAndScoreEvent = function(player, strike, hit) {
+    var hitNames = hit.join();
+
+    self.$events.append('<li class="event strike">' + player.name + ' hit ' + hitNames + ' with '+ strike + 'points </li>');  
+  }
+
+  self.handlePlayerEvents = function(player) {
+    var $playerRow = self.$board.find('tr[data-player-id="' + player.id + '"]');
+
+    $playerRow.find('.strike-button').on('click', function(event) {
+      event.preventDefault();
+
+      var $button = $(this);
+      // var player = self.game.findPlayer($button.data('player-id'));
+      var strike = $button.data('strike');
+      // perform a strike and see if we need to update player scores;
+      var updateScores = self.game.addStrike(player, strike);
+
+      if(player.strikes[strike] == 3 && $button.hasClass('btn-primary')) {
+        $button.removeClass('btn-primary');
+        $button.addClass('btn-success');
+      }
+
+      if (updateScores) {
+
+        $.each(self.game.players, function(index, p) {
+          if (p.id != player.id) {
+            $('.player-row[data-player-id="' + p.id + '"]').find('td.score').text(p.score);
+          }
+        });
+      } else {
+        // update strike times-count for the current player
+        $button.text(player.strikes[strike]);
+        // $playerModal.find('.player-strikes .times-count[data-strike="' + strike + '"]').text(player.strikes[strike]);  
+      }
+
+    });
+  }
+
+  self.handleReset = function() {
+    $('.reset-button').on('click', function(event) {
+      event.preventDefault();
+
+      if (confirm('Clear the board and start again?')) {
+        // clear game resources
+        self.game.clearPlayers();
+        // TODO: after adding events
+        // self.game.clearEvents();
+        
+        // clear gui
+        self.clearBoard();
+        self.clearEvents();
+      }      
+    });
+  }
+
+  self.clearBoard = function() {
+    self.$board.find('tbody').empty();
+  }
+
+  self.clearEvents = function() {
+    self.$events.find('.event').remove();
+  }
+
+  self.playerRow = function(player) {
+    var html = '<tr class="player-row" data-player-id="' + player.id + '">';
+    html += '<td class="name">' + player.name + '</td>';
+    $.each(player.strikes, function(strike, times) {
+      html += '<td class="strike-count">';
+      html += self.strikeButton(player.id, strike, times);
+      html += '</td>';
+    });
+    html += '<td class="score">' + player.score + '</td>';
     return html;
   }
 
-  self.addPlayerButton = function(player) {
-    $container.append( self.playerButton(player) );
+  self.addPlayerRow = function(player) {
+    self.$board.find('tbody').append( self.playerRow(player) );
+  }
+
+  self.strikeButton = function(playerId, strike, times) {
+    var html = '<button type="button" class="btn btn-primary strike-button" ';
+    html += 'data-player-id=" ' + playerId;
+    html += '"data-strike="' + strike + '">';
+    html += times;
+    html += '</button>';
+    return html;
   }
 }
 
-function Cricket(containerId) {
+function Cricket(boardClass) {
   var self = this;
-  self.gui = new gui(containerId, self);
+  self.gui = new gui(boardClass, self);
+
   self.players = [];
 
   self.init = function(seedPlayers) {
-    self.gui.clearContainer();
+    self.gui.clearBoard();
 
     if (seedPlayers) {
       self.players = seedPlayers;
@@ -101,7 +152,7 @@ function Cricket(containerId) {
 
   self.initFromSeedData = function(players) {
     for(var i = 0; i < players.length; i++) {
-      self.gui.addPlayerButton(players[i]);
+      self.gui.addPlayerRow(players[i]);
     }
   }
 
@@ -111,24 +162,46 @@ function Cricket(containerId) {
     })[0];
   }
 
+  self.createPlayer = function(newPlayerName) {
+    var id = self.players.length + 1;
+    player = {
+      id: id,
+      name: newPlayerName,
+      score: 0,
+      strikes: { '15': 0, '16': 0, '17': 0, '18': 0, '19': 0, '20': 0, '25': 0 }
+    };
+
+    self.players.push(player);
+
+    return player;
+  }
+
   self.addStrike = function(player, strike) {
     var updateScores = false;
     
     if (player.strikes[strike] < 3) {
       // add a new strike for that number if it's below 3 strikes
       player.strikes[strike]++;
+      self.gui.playerStrikeEvent(player, strike);
     } else {
       // update all other player scores
       updateScores = true;
+      var hitPlayers = []
 
       $.each(self.players, function(index, p) {
-        console.log(p);
         if (p.id != player.id && p.strikes[strike] < 3) {
+          hitPlayers.push(p.name);
           p.score += parseInt(strike);
         }
       });
+
+      self.gui.playerStrikeAndScoreEvent(player, strike, hitPlayers);
     }
 
     return updateScores;
+  }
+
+  self.clearPlayers = function() {
+    self.players = [];
   }
 }

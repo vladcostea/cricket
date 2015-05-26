@@ -7,102 +7,63 @@ body {
   font-family: 'Open Sans';
 }
 
-#players {
-  margin-top: 50px;
-}
-
-#player-modal .modal-header {
-  border-bottom: none;
-}
-
-#player-modal .modal-footer {
-  border-top: none;
-  text-align: center;
-}
-
-#player-modal .modal-header .modal-title {
-  text-align: center;
-  padding: 20px;
-}
-
-#player-modal .modal-body {
-  padding: 0px;
-}
-
-.player-strikes td.strike {
-  padding-left: 200px;
-}
-
-.player-strikes td.times {
-  text-align: right;
-  padding-right: 200px;
+.btn {
   font-weight: bold;
 }
 
-.player-strikes td.times .btn-add-strike {
-  margin-left: 15px;
-  font-size: 10px;
+.reset-container {
+  text-align: right;
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
-.player-strikes tr:last-child td {
+.cricket-board {
+  margin-bottom: 15px;
+}
+
+.cricket-board tr:last-child td {
   border-bottom: 1px solid #ddd;
 }
 
-.player-button {
-  position: relative;
-  padding: 20px;
-  padding-bottom: 10px;
-  display: block;
-  margin-bottom: 15px;
-  background-color: whitesmoke;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.cricket-board th, .cricket-board td {
+  text-align: center;
 }
 
-.player-button .name {
+.cricket-board th {
+  text-transform: uppercase;
+}
+
+.cricket-board td.name, .cricket-board td.score {
+  padding-top: 16px;
+  font-weight: bold;
+}
+
+.cricket-board .strike-button {
+  font-weight: bold;
+}
+
+.new-player-input-group {
+  margin-bottom: 15px;
+}
+
+.events {
+  list-style-type: none;
+  padding: 0px;
+}
+
+.events li:first-child {
+  padding: 10px;
+  background-color: whitesmoke;
+  border: 1px solid #ddd !important;
+  border-radius: 3px;
   font-size: 18px;
 }
 
-.player-button .score {
-  font-weight: bold;
-}
-
-.player-button .strikes {
-  margin-top: 15px;
-  margin-bottom: 0px;
-  padding: 0px;
-}
-
-.player-button .strikes tr:first-child td {
-  border-top: none;
-}
-
-.player-button .strikes tr td.title {
-  color: #777;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding-left: 0px
-}
-
-.player-button .strikes tr td.numbers {
-  text-align: right;
-  font-size: 12px;
-  color: #777;
-  padding-right: 0px;
-}
-/*.player-button .closed, .open {
-  position: absolute;
-}
-
-.player-button .closed {
-  top: 10px;
-  right: 20px;
+.events li {
   border-bottom: 1px solid #ddd;
+  padding: 10px;
 }
 
-.player-button .open {
-  bottom: 10px;
-  right: 20px;
+.events li:last-child {
+  border-bottom: none;
 }
-*/
