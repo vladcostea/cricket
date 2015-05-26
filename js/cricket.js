@@ -46,7 +46,7 @@ function gui(boardClass, game) {
   self.playerStrikeAndScoreEvent = function(player, strike, hit) {
     var hitNames = hit.join();
 
-    self.$events.append('<li class="event strike">' + player.name + ' hit ' + hitNames + ' with '+ strike + 'points </li>');  
+    self.$events.append('<li class="event strike">' + player.name + ' hit ' + hitNames + ' with '+ strike + ' points</li>');  
   }
 
   self.handlePlayerEvents = function(player) {
@@ -131,6 +131,15 @@ function gui(boardClass, game) {
     html += '</button>';
     return html;
   }
+
+  self.updateStrikeButton = function(player, strike, times) {
+    var $button = $('tr[data-player-id="' + player.id + '"]').find('.strike-button[data-strike="' + strike + '"]');
+    $button.text(times);
+  }
+
+  self.removeEvent = function(event) {
+    $events.find('.event[data-event-id="' + event.id + '"]').remove();
+  }
 }
 
 function Cricket(boardClass) {
@@ -138,6 +147,8 @@ function Cricket(boardClass) {
   self.gui = new gui(boardClass, self);
 
   self.players = [];
+  self.events = [];
+  self.lastEventId = 0;
 
   self.init = function(seedPlayers) {
     self.gui.clearBoard();
@@ -176,12 +187,22 @@ function Cricket(boardClass) {
     return player;
   }
 
+  self.createStrikeEvent = function(player, strike) {
+    self.lastEventId++;
+
+    event = new StrikeEvent(self.lastEventId, self, player, strike);
+    self.events.push(event);
+
+    return event;
+  }
+
   self.addStrike = function(player, strike) {
     var updateScores = false;
     
     if (player.strikes[strike] < 3) {
       // add a new strike for that number if it's below 3 strikes
       player.strikes[strike]++;
+      event = self.createStrikeEvent(player, strike);
       self.gui.playerStrikeEvent(player, strike);
     } else {
       // update all other player scores
@@ -204,4 +225,36 @@ function Cricket(boardClass) {
   self.clearPlayers = function() {
     self.players = [];
   }
+
+  self.removeStrikeEvent = function(event) {
+    self.gui.removeEvent(event);
+  }
+
+  self.updateStrikeButton = function(player, strike) {
+    self.gui.updateStrikeButton(player, strike, player.strikes[strike]);
+  }
+}
+
+function StrikeEvent(id, game, player, strike) {
+  var self = this;
+  self.id = id;
+  self.player = player;
+  self.strike = strike;
+  self.game = game;
+
+  self.undo = function() {
+    self.player.strikes[self.strike] -= 1;
+
+    self.game.removeStrikeEvent(self);
+    self.game.updateStrikeButton(self.player, self.strike);
+  }  
+}
+
+function Event(player, strike, playersHit) {
+
+  var self = this;
+  self.player = player;
+  self.strike = strike;
+  self.playersHit = playersHit;
+
 }
