@@ -110,12 +110,13 @@ function gui(boardClass, game) {
   self.playerRow = function(player) {
     var html = '<tr class="player-row" data-player-id="' + player.id + '">';
     html += '<td class="name">' + player.name + '</td>';
+    html += '<td class="score">' + player.score + '</td>';
     $.each(player.strikes, function(strike, times) {
       html += '<td class="strike-count">';
       html += self.strikeButton(player.id, strike, times);
       html += '</td>';
     });
-    html += '<td class="score">' + player.score + '</td>';
+    
     return html;
   }
 
